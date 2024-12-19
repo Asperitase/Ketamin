@@ -1,0 +1,17 @@
+# CMake build files
+build/
+CMakeFiles/
+CMakeCache.txt
+*.cmake
+
+# VS Code/Visual Studio
+.vscode/
+*.vcxproj*
+*.sln
+*.user
+
+# Temporary files
+*.obj
+*.log
+*.tmp
+*.swp
