@@ -1,0 +1,50 @@
+[cmake]
+version = "3.15"
+cmkr-include = "cmkr.cmake"
+
+[project]
+name = "ketaminex"
+languages = ["CXX"]
+
+[target.ketaminex]
+type = "executable"
+sources = [
+    "main.cpp",
+    "thirdparty/ImGui/imgui.cpp",
+    "thirdparty/ImGui/imgui_draw.cpp",
+    "thirdparty/ImGui/imgui_widgets.cpp",
+    "thirdparty/ImGui/imgui_tables.cpp",
+    "thirdparty/ImGui/imgui_impl_dx11.cpp",
+    "thirdparty/ImGui/imgui_impl_win32.cpp",
+    "feature/feature.cpp",
+    "feature/manager.cpp",
+    "feature/overlay/overlay.cpp",
+    "feature/watermark/watermark.cpp",
+    "launcher/launcher.cpp",
+    "menu/imgui_manager.cpp",
+    "menu/menu.cpp",
+    "window/window.cpp",
+    "window/d3d/directx.cpp",
+    "feature/*.hpp",
+    "feature/overlay/*.hpp",
+"feature/watermark/*.hpp",
+ "launcher/*.hpp",
+"menu/*.hpp",
+"resources/font/*.hpp",
+"resources/icon/*.hpp",
+"thirdparty/*.hpp",
+"thirdparty/ImGui/*.h",
+"window/*.hpp",
+"window/d3d/*.hpp"
+]
+include-directories = [
+    "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include",
+    "thirdparty"
+]
+link-directories = [
+    "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x64",
+]
+
+[target.ketaminex.properties]
+CXX_STANDARD = 20
+CXX_STANDARD_REQUIRED = true

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Develoment\Project\C++\ketaminex-script\ketaminex-script\build\CMakeFiles\650a315126b49ce9eea780d5c6a99bb3\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{AFA47043-A985-3EB4-87F4-4437A59F2FF0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
