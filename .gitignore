@@ -4,9 +4,10 @@ CMakeFiles/
 CMakeCache.txt
 *.cmake
 
-# VS Code/Visual Studio
-.vscode/
-*.vcxproj*
+# Visual Studio
+.vs/
+*.vcxproj.*
+*.suo
 *.sln
 *.user
 
