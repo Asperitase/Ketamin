@@ -52,6 +52,9 @@ set(ketaminex_SOURCES
 	"resources/font/Glory.hpp"
 	"resources/font/GloryBold.hpp"
 	"resources/icon/icons.hpp"
+	"sdk/common/common.hpp"
+	"sdk/mouse/mouse.cpp"
+	"sdk/mouse/mouse.hpp"
 	"thirdparty/ImGui/imconfig.h"
 	"thirdparty/ImGui/imgui.cpp"
 	"thirdparty/ImGui/imgui.h"
@@ -81,6 +84,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ketaminex_SOURCES})
 target_include_directories(ketaminex PRIVATE
 	"C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include"
 	thirdparty
+	"sdk/common"
 )
 
 target_link_directories(ketaminex PRIVATE
