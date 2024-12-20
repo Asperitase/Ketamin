@@ -6,10 +6,11 @@ CMakeCache.txt
 
 # Visual Studio
 .vs/
-*.vcxproj.*
-*.suo
+*.vcxproj
+*.vcxproj.user
+*.vcxproj.filters
 *.sln
-*.user
+*.suo
 
 # Temporary files
 *.obj
