@@ -61,8 +61,8 @@ namespace sdk::mouse {
         }
     }
 
-    void c_mouse::move( sdk::common::mouse_button button, char x, char y, char wheel, char unk_ ) noexcept {
-        sdk::common::mouse_input io_buffer( button, x, y, wheel, unk_ );
+    void c_mouse::move( sdk::common::mouse_event event, char x, char y, char wheel, char unk_ ) noexcept {
+        sdk::common::mouse_input io_buffer( event, x, y, wheel, unk_ );
 
         call_move( input.value(), io_buffer );
     }

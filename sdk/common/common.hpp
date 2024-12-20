@@ -2,7 +2,7 @@
 #define SDK_COMMON_HPP
 
 namespace sdk::common {
-    enum class mouse_button : char {
+    enum class mouse_event : char {
         NONE = 0,
         PRESS = 1,
         RELEASE = 2,
@@ -11,7 +11,7 @@ namespace sdk::common {
     };
 
     typedef struct {
-        mouse_button button; // Mouse button code (pressed or released)
+        mouse_event event;  // Mouse event code
         char x;              // X-axis movement
         char y;              // Y-axis movement
         char wheel;          // Scroll wheel movement (up/down)

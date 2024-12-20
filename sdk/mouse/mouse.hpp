@@ -2,7 +2,7 @@
 #define MOUSE_HPP
 
 #include <array>
-#include <common.hpp>
+#include <common/common.hpp>
 #include <optional>
 #include <Windows.h>
 #include <winternl.h>
@@ -26,7 +26,7 @@ namespace sdk::mouse {
 
         [[nodiscard]] static c_mouse& instance() noexcept;
 
-        void move( sdk::common::mouse_button button, char x, char y, char wheel, char unk_ = 0 ) noexcept;
+        void move( sdk::common::mouse_event event, char x, char y, char wheel, char unk_ = 0 ) noexcept;
 
         bool startup() noexcept;
         void cleanup() noexcept;
