@@ -17,24 +17,18 @@ namespace {
 } // namespace
 
 namespace sdk::mouse {
-    c_mouse* c_mouse::instance_ = nullptr;
     status_block c_mouse::status_io;
     std::optional<input_t> c_mouse::input;
 
-    c_mouse::c_mouse() noexcept {
-        instance_ = this;
-    }
+    c_mouse::c_mouse() noexcept = default;
 
     c_mouse::~c_mouse() noexcept {
         cleanup();
-        instance_ = nullptr;
     }
 
     [[nodiscard]] c_mouse& c_mouse::instance() noexcept {
-        if ( !instance_ )
-            assert( instance_ && "Instance of c_mouse not initialized." );
-
-        return *instance_;
+        static c_mouse instance;
+        return instance;
     }
 
     bool c_mouse::startup() noexcept {

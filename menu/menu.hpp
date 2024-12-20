@@ -23,8 +23,6 @@ namespace menu {
         c_menu& operator=( c_menu&& ) = delete;
 
         void render() const noexcept;
-    private:
-        static c_menu* instance_;
     };
 
 } // namespace menu

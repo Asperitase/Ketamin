@@ -32,14 +32,9 @@ namespace render {
         void create_window_handle() noexcept;
         void render_loop() noexcept;
 
-        [[nodiscard]] static c_window& instance() noexcept;
-
     private:
         window_handle handle = nullptr;
         WNDCLASSEX window_class_t;
-
-    private:
-        static c_window* instance_;
     };
 } // namespace render
 

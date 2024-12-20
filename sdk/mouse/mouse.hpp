@@ -34,9 +34,6 @@ namespace sdk::mouse {
     private:
         static std::optional<input_t> input;
         static status_block status_io;
-
-    private:
-        static c_mouse* instance_;
     };
 } // namespace sdk::mouse
 

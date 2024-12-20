@@ -5,28 +5,13 @@
 #include <cassert>
 
 namespace global {
-    c_launcher* c_launcher::instance_ = nullptr;
-
-    c_launcher::c_launcher( int argc, char* argv[] ) noexcept: _argc( argc ), _argv( argv ) {
-
-        instance_ = this;
-    }
+    c_launcher::c_launcher( int argc, char* argv[] ) noexcept: _argc( argc ), _argv( argv ) {}
 
     [[nodiscard]] std::unique_ptr<c_launcher> c_launcher::create( int argc, char* argv[] ) noexcept {
         return std::make_unique<c_launcher>( argc, argv );
     }
 
-    c_launcher::~c_launcher() noexcept {
-        instance_ = nullptr;
-    }
-
-    [[nodiscard]] c_launcher& c_launcher::instance() noexcept {
-        if ( !instance_ ) {
-            assert( instance_ && "Instance of c_launcher not initialized." );
-        }
-
-        return *instance_;
-    }
+    c_launcher::~c_launcher() noexcept = default;
 
     int c_launcher::start() const noexcept {
         shadowcall<BOOL>( "SetPriorityClass", ( HANDLE )-1, HIGH_PRIORITY_CLASS );

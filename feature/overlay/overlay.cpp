@@ -2,7 +2,7 @@
 
 #include "../menu/imgui_data.hpp"
 
-#include <common/name_selector.hpp>
+#include <common/weapon_name_selector.hpp>
 
 #include "../manager.hpp"
 

@@ -4,28 +4,16 @@
 #include <syscall.hpp>
 
 namespace render {
-    c_directx* c_directx::instance_ = nullptr;
-
     c_directx::c_directx() noexcept {
         shadowcall( "LoadLibraryA", "d3d11.dll" );
-        instance_ = this;
     }
 
     c_directx::~c_directx() {
         cleanup_device();
-        instance_ = nullptr;
     }
 
     [[nodiscard]] std::unique_ptr<c_directx> c_directx::create() noexcept {
         return std::make_unique<c_directx>();
-    }
-
-    [[nodiscard]] c_directx& c_directx::instance() noexcept {
-        if ( !instance_ ) {
-            assert( instance_ && "Instance of c_directx not initialized." );
-        }
-
-        return *instance_;
     }
 
     bool c_directx::create_device( handle window ) noexcept {

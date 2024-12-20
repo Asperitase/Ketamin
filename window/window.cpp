@@ -4,8 +4,6 @@
 #include <syscall.hpp>
 
 namespace render {
-    c_window* c_window::instance_ = nullptr;
-
     c_window::c_window() noexcept {
         window_class_t = { sizeof( window_class_t ),
                            CS_CLASSDC,
@@ -20,11 +18,8 @@ namespace render {
                            WINDOW_CLASS_NAME,
                            nullptr };
 
-        if ( !::shadowcall<atom>( "RegisterClassExA", &window_class_t ) ) {
+        if ( !::shadowcall<atom>( "RegisterClassExA", &window_class_t ) )
             return;
-        }
-
-        instance_ = this;
     }
 
     void c_window::reset() noexcept {
@@ -40,19 +35,10 @@ namespace render {
 
     c_window::~c_window() noexcept {
         reset();
-        instance_ = nullptr;
     }
 
     [[nodiscard]] std::unique_ptr<c_window> c_window::create() noexcept {
         return std::make_unique<c_window>();
-    }
-
-    [[nodiscard]] c_window& c_window::instance() noexcept {
-        if ( !instance_ ) {
-            assert( instance_ && "Instance of c_window not initialized." );
-        }
-
-        return *instance_;
     }
 
     void c_window::create_window_handle() noexcept {

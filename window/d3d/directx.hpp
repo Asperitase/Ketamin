@@ -63,8 +63,6 @@ namespace render {
 
         [[nodiscard]] static std::unique_ptr<c_directx> create() noexcept;
 
-        [[nodiscard]] static c_directx& instance() noexcept;
-
     public:
         bool create_device( handle window ) noexcept;
         void create_target() noexcept;
@@ -77,9 +75,6 @@ namespace render {
         [[nodiscard]] ID3D11DeviceContext* get_context() const noexcept;
         [[nodiscard]] IDXGISwapChain* get_swapchain() const noexcept;
         [[nodiscard]] ID3D11RenderTargetView* get_targetview() const noexcept;
-
-    private:
-        static c_directx* instance_;
     };
 
 } // namespace render
