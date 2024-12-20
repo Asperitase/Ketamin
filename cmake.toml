@@ -38,7 +38,7 @@ sources = [
     "window/d3d/*.hpp",
     "sdk/mouse/*.hpp",
     "sdk/mouse/mouse.cpp",
-    "sdk/common/*.hpp" 
+    "sdk/common/*.hpp"
 ]
 
 include-directories = [
