@@ -3,11 +3,11 @@
 
 namespace sdk::common {
     enum class mouse_button : char {
-        none = 0,
-        press = 1,
-        release = 2,
-        move = 3,
-        click = 4
+        NONE = 0,
+        PRESS = 1,
+        RELEASE = 2,
+        MOVE = 3,
+        CLICK = 4
     };
 
     typedef struct {

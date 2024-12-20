@@ -12,7 +12,7 @@ namespace sdk::mouse {
     using char_t = const wchar_t*;
     using status_block = IO_STATUS_BLOCK;
 
-    class c_mouse {
+    class c_mouse final {
         static constexpr std::array<char_t, 2> device_names = { L"\\??\\ROOT#SYSTEM#0002#{1abc05c0-c378-41b9-9cef-df1aba82b015}",
                                                                 L"\\??\\ROOT#SYSTEM#0001#{1abc05c0-c378-41b9-9cef-df1aba82b015}" };
 
