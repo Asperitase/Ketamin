@@ -20,6 +20,7 @@ sources = [
     "feature/manager.cpp",
     "feature/overlay/overlay.cpp",
     "feature/watermark/watermark.cpp",
+    "feature/control/control.cpp",
     "launcher/launcher.cpp",
     "menu/imgui_manager.cpp",
     "menu/menu.cpp",
@@ -28,6 +29,7 @@ sources = [
     "feature/*.hpp",
     "feature/overlay/*.hpp",
     "feature/watermark/*.hpp",
+    "feature/control/*.hpp",
     "launcher/*.hpp",
     "menu/*.hpp",
     "resources/font/*.hpp",
@@ -38,13 +40,15 @@ sources = [
     "window/d3d/*.hpp",
     "sdk/mouse/*.hpp",
     "sdk/mouse/mouse.cpp",
-    "sdk/common/*.hpp"
+    "sdk/common/*.hpp",
+    "game_classes/constants/*.hpp"
 ]
 
 include-directories = [
     "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include",
     "thirdparty",
-    "sdk/common"
+    "sdk",
+    "game_classes"
 ]
 
 link-directories = [

@@ -32,6 +32,8 @@ project(ketaminex
 # Target: ketaminex
 set(ketaminex_SOURCES
 	cmake.toml
+	"feature/control/control.cpp"
+	"feature/control/control.hpp"
 	"feature/feature.cpp"
 	"feature/feature.hpp"
 	"feature/manager.cpp"
@@ -41,6 +43,7 @@ set(ketaminex_SOURCES
 	"feature/settings.hpp"
 	"feature/watermark/watermark.cpp"
 	"feature/watermark/watermark.hpp"
+	"game_classes/constants/weapon_name.hpp"
 	"launcher/launcher.cpp"
 	"launcher/launcher.hpp"
 	main.cpp
@@ -53,6 +56,7 @@ set(ketaminex_SOURCES
 	"resources/font/GloryBold.hpp"
 	"resources/icon/icons.hpp"
 	"sdk/common/common.hpp"
+	"sdk/common/name_selector.hpp"
 	"sdk/mouse/mouse.cpp"
 	"sdk/mouse/mouse.hpp"
 	"thirdparty/ImGui/imconfig.h"
@@ -84,7 +88,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ketaminex_SOURCES})
 target_include_directories(ketaminex PRIVATE
 	"C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include"
 	thirdparty
-	"sdk/common"
+	sdk
+	game_classes
 )
 
 target_link_directories(ketaminex PRIVATE
