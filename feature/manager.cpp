@@ -2,6 +2,7 @@
 
 #include "watermark/watermark.hpp"
 #include "overlay/overlay.hpp"
+#include "control/control.hpp"
 
 #include <cassert>
 #include <ranges>
@@ -12,6 +13,7 @@ namespace feature {
 
         add_feature( "Watermark", new feature::visual::watermark::c_watermark() );
         add_feature( "Overlay", new feature::visual::overlay::c_overlay() );
+        add_feature( "Control", new feature::visual::control::c_control() );
     }
 
     c_manager::~c_manager() noexcept {
