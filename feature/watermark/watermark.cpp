@@ -4,10 +4,7 @@
 
 using namespace feature::visual::watermark;
 
-c_watermark::c_watermark() noexcept: c_feature( "Watermark", "Show information for script.", category_t::APPEARANCE ) {
-    /*testbool = std::make_shared<c_setting>("Test", "Test", false);
-    settings_->add_settings(testbool);*/
-}
+c_watermark::c_watermark() noexcept: c_feature( "Watermark", "Show information for script.", category_t::APPEARANCE ) { }
 
 void c_watermark::on_enable() noexcept { }
 

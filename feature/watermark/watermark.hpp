@@ -13,8 +13,6 @@ namespace feature::visual::watermark {
         void on_disable() noexcept final;
         void on_draw() noexcept final;
         void on_menu() noexcept final;
-        // private:
-        //	std::shared_ptr<c_setting> testbool;
     };
 } // namespace feature::visual::watermark
 
