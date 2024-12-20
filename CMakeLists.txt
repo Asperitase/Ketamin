@@ -56,7 +56,7 @@ set(ketaminex_SOURCES
 	"resources/font/GloryBold.hpp"
 	"resources/icon/icons.hpp"
 	"sdk/common/common.hpp"
-	"sdk/common/name_selector.hpp"
+	"sdk/common/weapon_name_selector.hpp"
 	"sdk/mouse/mouse.cpp"
 	"sdk/mouse/mouse.hpp"
 	"thirdparty/ImGui/imconfig.h"
