@@ -18,13 +18,11 @@ namespace feature {
 
     c_manager::~c_manager() noexcept {
         features.clear();
-
-        for ( const auto& feature : features | std::views::values )
-            delete feature;
     }
 
-    [[nodiscard]] std::unique_ptr<c_manager> c_manager::create() noexcept {
-        return std::make_unique<c_manager>();
+    [[nodiscard]] c_manager& c_manager::instance() noexcept {
+        static c_manager instance;
+        return instance;
     }
 
     void c_manager::add_feature( const std::string_view& name, c_feature* feature ) noexcept {

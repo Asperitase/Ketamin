@@ -5,7 +5,7 @@
 
 #include <vector>
 
-const char* weapons_array[] = { game_classes::rifle::AK.data(),
+static const char* weapons_array[] = { game_classes::rifle::AK.data(),
                                 game_classes::rifle::HMLMG.data(),
                                 game_classes::rifle::HANDMADE_SMG.data(),
                                 game_classes::rifle::CUSTOM_SMG.data(),

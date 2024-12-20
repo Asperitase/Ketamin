@@ -14,7 +14,7 @@ namespace feature::visual::control {
         void on_menu() noexcept final;
 
     private:
-        std::shared_ptr<c_setting> current_weapon;
+        std::shared_ptr<c_setting> current_weapon; 
     };
 } // namespace feature::visual::control
 

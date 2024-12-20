@@ -2,6 +2,10 @@
 
 #include "../menu/imgui_data.hpp"
 
+#include <common/name_selector.hpp>
+
+#include "../manager.hpp"
+
 using namespace feature::visual::overlay;
 
 c_overlay::c_overlay() noexcept: c_feature( "Overlay", "Renders window with script selections.", category_t::APPEARANCE ) { }
@@ -13,6 +17,8 @@ void c_overlay::on_disable() noexcept { }
 void c_overlay::on_draw() noexcept {
     if ( !is_enabled() )
         return;
+
+    auto& settings_control = feature::c_manager::instance().get_feature_by_name( "Control" )->get_settings();
 
     ImGuiWindowClass window_class;
     window_class.ViewportFlagsOverrideSet = ImGuiViewportFlags_TopMost | ImGuiViewportFlags_NoTaskBarIcon;
@@ -42,9 +48,9 @@ void c_overlay::on_draw() noexcept {
 
         ImGui::PushFont( imgui::data::g_imgui_data.glory_bold );
         ImGui::SetCursorPos( ImVec2( text_pos_x, sep_pos_y + 10 ) );
-        ImGui::TextColored( ImGui::ColorConvertU32ToFloat4( ImColor( 249, 249, 250, 255 ) ), "Assault Rifle" );
+        ImGui::TextColored( ImGui::ColorConvertU32ToFloat4( ImColor( 249, 249, 250, 255 ) ),
+                            weapons_array[std::get<int>( settings_control->get_setting( "current_weapon" )->get_value() )] );
         ImGui::PopFont();
-
         ImGui::PushFont( imgui::data::g_imgui_data.glory_bold );
         ImGui::SetCursorPos( ImVec2( text_pos_x, sep_pos_y + 30 ) );
         ImGui::TextColored( ImGui::ColorConvertU32ToFloat4( ImColor( 249, 249, 250, 255 ) ), "Holosight Scope" );

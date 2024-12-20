@@ -2,12 +2,12 @@
 
 #include "../menu/imgui_data.hpp"
 
-#include <common/name_selector.hpp>
+#include <common/weapon_name_selector.hpp>
 
 using namespace feature::visual::control;
 
 c_control::c_control() noexcept: c_feature( "Control", "Selection", category_t::CONTROL ) {
-    current_weapon = std::make_shared<c_setting>( "Weapon", "Current Seletion Weapon", 0 );
+    current_weapon = std::make_shared<c_setting>( "current_weapon", "Current Seletion Weapon", 0 );
 
     settings_->add_settings( current_weapon );
 }

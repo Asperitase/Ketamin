@@ -15,8 +15,7 @@ namespace feature {
         c_manager( c_manager&& ) = delete;
         c_manager& operator=( c_manager&& ) = delete;
 
-        [[nodiscard]] static std::unique_ptr<c_manager> create() noexcept;
-
+        [[nodiscard]] static c_manager& instance() noexcept;
     public:
         [[nodiscard]] const std::unordered_map<std::string_view, c_feature*>& get_feature() const noexcept;
         [[nodiscard]] c_feature* get_feature_by_name( const std::string_view& name ) const noexcept;
