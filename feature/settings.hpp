@@ -1,5 +1,5 @@
-#ifndef SETTINGS_HPP
-#define SETTINGS_HPP
+#ifndef FEATURE_SETTINGS_HPP
+#define FEATURE_SETTINGS_HPP
 
 #include <ImGui/imgui.h>
 #include <memory>
@@ -8,56 +8,136 @@
 #include <variant>
 #include <vector>
 
-class c_setting {
+/**
+ * @brief Represents a configurable setting with a name, description, and a value.
+ */
+class c_setting final {
 public:
+    /**
+     * @brief Constructor for a c_setting.
+     *
+     * @param name The name of the setting.
+     * @param description A short description of the setting.
+     * @param value The value of the setting, which can be of various types.
+     */
     c_setting( std::string name, std::string description, const std::variant<bool, int, float, std::string, ImColor>& value ) noexcept
         : name( std::move( name ) ), description( std::move( description ) ), value( value ) { }
 
+    /**
+     * @brief Gets the name of the setting.
+     *
+     * @return The name of the setting.
+     */
     [[nodiscard]] const std::string& get_name() const noexcept {
         return name;
     }
 
+    /**
+     * @brief Gets the description of the setting.
+     *
+     * @return The description of the setting.
+     */
     [[nodiscard]] const std::string& get_description() const noexcept {
         return description;
     }
 
+    /**
+     * @brief Gets a reference to the value of the setting.
+     *
+     * @return A reference to the value of the setting.
+     */
     std::variant<bool, int, float, std::string, ImColor>& get_value() noexcept {
         return value;
     }
 
+    /**
+     * @brief Sets the value of the setting.
+     *
+     * @param val The new value to set for the setting.
+     */
     void set_value( const std::variant<bool, int, float, std::string, ImColor>& val ) noexcept {
         value = val;
     }
 
 private:
-    std::string name;
-    std::string description;
-    std::variant<bool, int, float, std::string, ImColor> value;
+    std::string name;                                           ///< The name of the setting.
+    std::string description;                                    ///< The description of the setting.
+    std::variant<bool, int, float, std::string, ImColor> value; ///< The value of the setting (variant of supported types).
 };
 
-class c_settings {
+/**
+ * @brief A container class for managing a list of settings.
+ */
+class c_settings final {
 public:
+    /**
+     * @brief Default constructor for the c_settings class.
+     * Initializes empty vectors and reserves space for settings.
+     */
     c_settings() noexcept {
-        settings_vector.reserve( 100 );
-        settings_map = std::unordered_map<std::string, std::size_t>();
+        settings_map = std::unordered_map<std::string, std::size_t>(); // Mapping from setting name to index
     }
 
+    /**
+     * @brief Destructor for the c_settings class.
+     * Ensures all settings are properly cleaned up.
+     */
     ~c_settings() noexcept {
-        for ( auto& setting : settings_vector ) {
-            setting.reset();
-        }
+        for ( auto& setting : settings_vector )
+            setting.reset(); // Reset all shared pointers in the vector to release memory
     }
 
-    void add_settings( const std::shared_ptr<c_setting>& setting ) noexcept {
-        settings_vector.push_back( setting );
-        settings_map[settings_vector.back()->get_name()] = settings_vector.size() - 1;
+    /**
+     * @brief Initializes a setting and adds it to the global list.
+     *
+     * @param name The name of the setting.
+     * @param description A description of the setting.
+     * @param args The value(s) for the setting (supports various types).
+     * @return A shared pointer to the created setting.
+     */
+    template <typename... Args>
+    std::shared_ptr<c_setting> initialize( const std::string& name, const std::string& description, Args&&... args ) noexcept {
+        if ( settings_vector.size() == settings_vector.capacity() )
+            settings_vector.reserve( settings_vector.capacity() * 2 );
+
+        auto setting =
+            std::make_shared<c_setting>( name, description, std::variant<bool, int, float, std::string, ImColor>( std::forward<Args>( args )... ) );
+
+        globally( setting );
+
+        return setting;
     }
 
-    [[nodiscard]] const std::vector<std::shared_ptr<c_setting>>& get_settings() const noexcept {
+    /**
+     * @brief Initializes a setting without adding it to the global list.
+     * This is useful for local, temporary settings.
+     *
+     * @param name The name of the setting.
+     * @param description A description of the setting.
+     * @param args The value(s) for the setting (supports various types).
+     * @return A shared pointer to the created setting.
+     */
+    template <typename... Args>
+    std::shared_ptr<c_setting> local_initialize( const std::string& name, const std::string& description, Args&&... args ) noexcept {
+        return std::make_shared<c_setting>( name, description, std::variant<bool, int, float, std::string, ImColor>( std::forward<Args>( args )... ) );
+    }
+
+    /**
+     * @brief Gets all settings in the list.
+     *
+     * @return A constant reference to the vector containing all settings.
+     */
+    [[nodiscard]] const std::vector<std::shared_ptr<c_setting>>& get_all() const noexcept {
         return settings_vector;
     }
 
-    [[nodiscard]] const std::shared_ptr<c_setting>& get_setting( const std::string& name ) const noexcept {
+    /**
+     * @brief Gets a specific setting by name.
+     *
+     * @param name The name of the setting to retrieve.
+     * @return A constant reference to the shared pointer to the setting.
+     */
+    [[nodiscard]] const std::shared_ptr<c_setting>& get( const std::string& name ) const noexcept {
         const auto it = settings_map.find( name );
         if ( it == settings_map.end() )
             assert( false && "Setting not found." );
@@ -66,8 +146,23 @@ public:
     }
 
 private:
-    std::vector<std::shared_ptr<c_setting>> settings_vector;
-    std::unordered_map<std::string, std::size_t> settings_map;
+    /**
+     * @brief Adds a setting to the global list (vector and map).
+     *
+     * @param setting A shared pointer to the setting to be added.
+     */
+    void globally( const std::shared_ptr<c_setting>& setting ) noexcept {
+        assert( setting && "Setting cannot be null." );
+
+        settings_vector.push_back( setting );
+
+        const auto& name = setting->get_name();
+        settings_map[name] = settings_vector.size() - 1;
+    }
+
+private:
+    std::vector<std::shared_ptr<c_setting>> settings_vector;   ///< Vector of all settings.
+    std::unordered_map<std::string, std::size_t> settings_map; ///< Map for fast lookup by setting name.
 };
 
-#endif // !1
+#endif // !FEATURE_SETTINGS_HPP

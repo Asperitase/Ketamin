@@ -1,14 +1,15 @@
 #include "imgui_manager.hpp"
 
-#include "../resources/font/Glory.hpp"
-#include "../resources/font/GloryBold.hpp"
-#include "../resources/icon/icons.hpp"
+#include <font/Glory.hpp>
+#include <font/GloryBold.hpp>
+#include <icon/icons.hpp>
+
+#include "imgui_data.hpp"
 
 namespace render {
     c_imgui_manager::~c_imgui_manager() noexcept {
-        if ( initialize.load( std::memory_order_acquire ) ) {
+        if ( initialize.test_and_set( std::memory_order_acquire ) )
             shutdown_imgui();
-        }
     }
 
     void c_imgui_manager::configure_style() noexcept {
@@ -29,7 +30,7 @@ namespace render {
     }
 
     void c_imgui_manager::initialize_imgui( window_handle handle, c_directx* directx ) noexcept {
-        if ( initialize.exchange( true, std::memory_order_acquire ) )
+        if ( initialize.test_and_set( std::memory_order_acquire ) )
             return;
 
         ImGui::CreateContext();
@@ -47,11 +48,11 @@ namespace render {
         ImGui_ImplWin32_Init( handle );
         ImGui_ImplDX11_Init( directx->get_device(), directx->get_context() );
 
-        initialize.store( true, std::memory_order_acquire );
+        initialize.clear( std::memory_order_release );
     }
 
     void c_imgui_manager::render_imgui_frame( c_directx* directx ) noexcept {
-        if ( !initialize.load( std::memory_order_acquire ) )
+        if ( !initialize.test_and_set( std::memory_order_acquire ) )
             return;
 
         ImGui_ImplDX11_NewFrame();
@@ -62,13 +63,13 @@ namespace render {
     }
 
     void c_imgui_manager::shutdown_imgui() noexcept {
-        if ( !initialize.load( std::memory_order_acquire ) )
+        if ( !initialize.test_and_set( std::memory_order_acquire ) )
             return;
 
         ImGui_ImplDX11_Shutdown();
         ImGui_ImplWin32_Shutdown();
         ImGui::DestroyContext();
 
-        initialize.store( false, std::memory_order_release );
+        initialize.test_and_set( std::memory_order_release );
     }
 } // namespace render

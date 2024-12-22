@@ -1,24 +1,23 @@
 #include "window.hpp"
 
-#include <cassert>
 #include <syscall.hpp>
 
 namespace render {
     c_window::c_window() noexcept {
-        window_class_t = { sizeof( window_class_t ),
-                           CS_CLASSDC,
-                           window_proccess,
-                           0L,
-                           0L,
-                           shadowcall<HMODULE>( "GetModuleHandleA", nullptr ),
-                           nullptr,
-                           nullptr,
-                           nullptr,
-                           nullptr,
-                           WINDOW_CLASS_NAME,
-                           nullptr };
+        window_class = { sizeof( window_class ),
+                         CS_CLASSDC,
+                         window_proccess,
+                         0L,
+                         0L,
+                         shadowcall<HMODULE>( "GetModuleHandleA", nullptr ),
+                         nullptr,
+                         nullptr,
+                         nullptr,
+                         nullptr,
+                         WINDOW_CLASS_NAME,
+                         nullptr };
 
-        if ( !::shadowcall<atom>( "RegisterClassExA", &window_class_t ) )
+        if ( !::shadowcall<atom>( "RegisterClassExA", &window_class ) )
             return;
     }
 
@@ -30,7 +29,7 @@ namespace render {
             handle.reset();
         }
 
-        ::shadowcall<BOOL>( "UnregisterClassA", window_class_t.lpszClassName, window_class_t.hInstance );
+        ::shadowcall<BOOL>( "UnregisterClassA", window_class.lpszClassName, window_class.hInstance );
     }
 
     c_window::~c_window() noexcept {
@@ -42,8 +41,8 @@ namespace render {
     }
 
     void c_window::create_window_handle() noexcept {
-        handle = ::shadowcall<HWND>( "CreateWindowExA", 0L, window_class_t.lpszClassName, WINDOW_NAME, WS_POPUP, 0, 0, 0, 0, nullptr, nullptr,
-                                     window_class_t.hInstance, nullptr );
+        handle = ::shadowcall<HWND>( "CreateWindowExA", 0L, window_class.lpszClassName, WINDOW_NAME, WS_POPUP, 0, 0, 0, 0, nullptr, nullptr,
+                                     window_class.hInstance, nullptr );
 
         if ( !handle )
             return;

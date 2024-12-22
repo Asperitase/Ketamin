@@ -1,7 +1,7 @@
 #ifndef IMGUI_MANAGER_HPP
 #define IMGUI_MANAGER_HPP
 
-#include "imgui_data.hpp"
+#include <d3d/directx.hpp>
 
 #include "menu.hpp"
 
@@ -32,7 +32,7 @@ namespace render {
         void load_fonts() const noexcept;
 
     private:
-        std::atomic<bool> initialize = false;
+        std::atomic_flag initialize = ATOMIC_FLAG_INIT;
     };
 } // namespace render
 

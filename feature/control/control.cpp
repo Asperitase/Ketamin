@@ -1,27 +1,19 @@
 #include "control.hpp"
 
-#include "../menu/imgui_data.hpp"
-
 #include <common/weapon_name_selector.hpp>
 
-using namespace feature::visual::control;
-
-c_control::c_control() noexcept: c_feature( "Control", "Selection", category_t::CONTROL ) {
-    current_weapon = std::make_shared<c_setting>( "current_weapon", "Current Seletion Weapon", 0 );
-
-    settings_->add_settings( current_weapon );
-}
-
-void c_control::on_enable() noexcept { }
-
-void c_control::on_disable() noexcept { }
-
-void c_control::on_draw() noexcept { }
-
-void c_control::on_menu() noexcept {
-    ImGui::Checkbox( "Enable##c_control", &std::get<bool>( enabled_setting->get_value() ) );
-
-    if ( is_enabled() ) {
-        ImGui::Combo( "Weapon", &std::get<int>( current_weapon->get_value() ), weapons_array, IM_ARRAYSIZE( weapons_array ) );
+namespace feature::menu::control {
+    c_control::c_control() noexcept: c_feature( "Control", "Control settings for weapon handling and recoil management", category_t::CONTROL ) {
+        selected_weapon = settings_->initialize( "c_control.selected_weapon", "Currently selected weapon in the game", 0 );
     }
-}
+
+    void c_control::on_draw() noexcept { }
+
+    void c_control::on_menu() noexcept {
+        ImGui::Checkbox( "Enable Control Recoil", &std::get<bool>( enabled_setting->get_value() ) );
+
+        if ( is_enabled() ) {
+            ImGui::Combo( "Weapon", &std::get<int>( selected_weapon->get_value() ), weapons_array, IM_ARRAYSIZE( weapons_array ) );
+        }
+    }
+} // namespace feature::menu::control

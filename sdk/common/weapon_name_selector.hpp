@@ -3,8 +3,6 @@
 
 #include <constants/weapon_name.hpp>
 
-#include <vector>
-
 static const char* weapons_array[] = { game_classes::rifle::AK.data(),
                                 game_classes::rifle::HMLMG.data(),
                                 game_classes::rifle::HANDMADE_SMG.data(),

@@ -5,18 +5,15 @@
 
 namespace global {
     class c_launcher final {
-        int _argc = 0;
-        char** _argv = nullptr;
-
     public:
-        explicit c_launcher( int argc, char* argv[] ) noexcept;
+        explicit c_launcher() noexcept = default;
         c_launcher( const c_launcher& ) = delete;
         c_launcher& operator=( const c_launcher& ) = delete;
         c_launcher( c_launcher&& ) = delete;
         c_launcher& operator=( c_launcher&& ) = delete;
-        ~c_launcher() noexcept;
+        ~c_launcher() noexcept = default;
 
-        [[nodiscard]] static std::unique_ptr<c_launcher> create( int argc, char* argv[] ) noexcept;
+        [[nodiscard]] static c_launcher& instance() noexcept;
 
         int start() const noexcept;
     };

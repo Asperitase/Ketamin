@@ -3,15 +3,15 @@
 
 #include "d3d/directx.hpp"
 
-#include "../menu/imgui_manager.hpp"
-
 #include <memory>
 #include <optional>
 #include <Windows.h>
 
+#include <imgui_manager.hpp>
+
 namespace render {
     constexpr const char* WINDOW_CLASS_NAME = "UnityWndClass";
-    constexpr const char* WINDOW_NAME = "Rust";
+    constexpr const char* WINDOW_NAME = "New Project";
 
     class c_window final : c_imgui_manager {
         using window_handle = std::optional<HWND>;
@@ -34,7 +34,7 @@ namespace render {
 
     private:
         window_handle handle = nullptr;
-        WNDCLASSEX window_class_t;
+        WNDCLASSEX window_class;
     };
 } // namespace render
 

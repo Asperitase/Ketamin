@@ -40,9 +40,10 @@ set(ketaminex_SOURCES
 	"feature/manager.hpp"
 	"feature/overlay/overlay.cpp"
 	"feature/overlay/overlay.hpp"
+	"feature/overlay/overlay_context.hpp"
+	"feature/overlay/overlay_panel.hpp"
+	"feature/overlay/overlay_params.hpp"
 	"feature/settings.hpp"
-	"feature/watermark/watermark.cpp"
-	"feature/watermark/watermark.hpp"
 	"game_classes/constants/weapon_name.hpp"
 	"launcher/launcher.cpp"
 	"launcher/launcher.hpp"
@@ -52,13 +53,16 @@ set(ketaminex_SOURCES
 	"menu/imgui_manager.hpp"
 	"menu/menu.cpp"
 	"menu/menu.hpp"
+	"menu/menu_params.hpp"
 	"resources/font/Glory.hpp"
 	"resources/font/GloryBold.hpp"
 	"resources/icon/icons.hpp"
-	"sdk/common/common.hpp"
 	"sdk/common/weapon_name_selector.hpp"
 	"sdk/mouse/mouse.cpp"
 	"sdk/mouse/mouse.hpp"
+	"sdk/mouse/mouse_common.hpp"
+	"sdk/mouse/mouse_constants.hpp"
+	"sdk/mouse/mouse_params.hpp"
 	"thirdparty/ImGui/imconfig.h"
 	"thirdparty/ImGui/imgui.cpp"
 	"thirdparty/ImGui/imgui.h"
@@ -87,9 +91,13 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ketaminex_SOURCES})
 
 target_include_directories(ketaminex PRIVATE
 	"C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include"
+	resources
 	thirdparty
 	sdk
 	game_classes
+	feature
+	window
+	menu
 )
 
 target_link_directories(ketaminex PRIVATE

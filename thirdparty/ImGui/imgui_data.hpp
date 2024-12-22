@@ -1,7 +1,7 @@
 #ifndef IMGUI_DATA_HPP
 #define IMGUI_DATA_HPP
 
-#include "ImGui/imgui.h"
+#include "imgui.h"
 
 namespace imgui::data {
 

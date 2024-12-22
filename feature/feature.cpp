@@ -8,19 +8,16 @@ namespace feature {
         switch ( category ) {
         case category_t::CONTROL:
             return "Control";
-        case category_t::SETTINGS:
-            return "Settings";
-        case category_t::APPEARANCE:
-            return "Appearance";
+        case category_t::VISUAL:
+            return "Visual";
         [[unlikely]] default:
             return "Unknown";
         }
     }
 
-    c_feature::c_feature( std::string_view name, std::string_view description, const category_t category ) noexcept
-        : name( name ), description( description ), category( category ), settings_{ std::make_unique<c_settings>() },
-          enabled_setting{ std::make_shared<c_setting>( "Enabled", "Enables or disables this feature", false ) } {
-        settings_->add_settings( enabled_setting );
+    c_feature::c_feature( std::string name, std::string description, const category_t category ) noexcept
+        : name( name ), description( description ), category( category ), settings_{ std::make_unique<c_settings>() } {
+        enabled_setting = settings_->initialize( "Enabled", "Enables or disables this feature", false );
     }
 
     [[nodiscard]] bool c_feature::is_enabled() const noexcept {
@@ -35,11 +32,11 @@ namespace feature {
         return settings_;
     }
 
-    [[nodiscard]] const std::string_view c_feature::get_name() const noexcept {
+    [[nodiscard]] const std::string& c_feature::get_name() const noexcept {
         return name;
     }
 
-    [[nodiscard]] const std::string_view c_feature::get_description() const noexcept {
+    [[nodiscard]] const std::string& c_feature::get_description() const noexcept {
         return description;
     }
 } // namespace feature

@@ -1,21 +1,19 @@
-#ifndef CONTROL_HPP
-#define CONTROL_HPP
+#ifndef FEATURE_CONTROL_HPP
+#define FEATURE_CONTROL_HPP
 
-#include "../feature.hpp"
+#include <feature.hpp>
 
-namespace feature::visual::control {
+namespace feature::menu::control {
     class c_control final : public c_feature {
     public:
         explicit c_control() noexcept;
         ~c_control() noexcept override = default;
-        void on_enable() noexcept final;
-        void on_disable() noexcept final;
         void on_draw() noexcept final;
         void on_menu() noexcept final;
 
     private:
-        std::shared_ptr<c_setting> current_weapon; 
+        std::shared_ptr<c_setting> selected_weapon;
     };
-} // namespace feature::visual::control
+} // namespace feature::menu::control
 
-#endif // !CONTROL_HPP
+#endif // !FEATURE_CONTROL_HPP

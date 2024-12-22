@@ -19,7 +19,6 @@ sources = [
     "feature/feature.cpp",
     "feature/manager.cpp",
     "feature/overlay/overlay.cpp",
-    "feature/watermark/watermark.cpp",
     "feature/control/control.cpp",
     "launcher/launcher.cpp",
     "menu/imgui_manager.cpp",
@@ -28,7 +27,6 @@ sources = [
     "window/d3d/directx.cpp",
     "feature/*.hpp",
     "feature/overlay/*.hpp",
-    "feature/watermark/*.hpp",
     "feature/control/*.hpp",
     "launcher/*.hpp",
     "menu/*.hpp",
@@ -46,9 +44,13 @@ sources = [
 
 include-directories = [
     "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include",
+    "resources",
     "thirdparty",
     "sdk",
-    "game_classes"
+    "game_classes",
+    "feature",
+    "window",
+    "menu"
 ]
 
 link-directories = [

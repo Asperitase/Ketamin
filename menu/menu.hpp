@@ -3,15 +3,9 @@
 
 #include <memory>
 
-#include "../feature/manager.hpp"
+#include "menu_params.hpp"
 
 namespace menu {
-
-    struct menu_data_t {
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
-        int width = 600;
-        int height = 300;
-    };
 
     class c_menu : menu_data_t {
     public:
