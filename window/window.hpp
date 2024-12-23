@@ -9,10 +9,9 @@
 
 #include <imgui_manager.hpp>
 
-namespace render {
-    constexpr const char* WINDOW_CLASS_NAME = "UnityWndClass";
-    constexpr const char* WINDOW_NAME = "New Project";
+#include "window_constants.hpp"
 
+namespace render {
     class c_window final : c_imgui_manager {
         using window_handle = std::optional<HWND>;
         using atom = ATOM;
@@ -27,14 +26,14 @@ namespace render {
         c_window& operator=( c_window&& ) = delete;
 
         ~c_window() noexcept;
-        void reset() noexcept;
 
+        void reset() noexcept;
         void create_window_handle() noexcept;
         void render_loop() noexcept;
 
     private:
         window_handle handle = nullptr;
-        WNDCLASSEX window_class;
+        WNDCLASSEX window_class{};
     };
 } // namespace render
 

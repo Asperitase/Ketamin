@@ -32,7 +32,7 @@ inline LRESULT window_proccess( HWND window_handle, UINT message, WPARAM param, 
 
 namespace render {
     class c_directx final {
-        using result_t = LRESULT;
+        using result_t = HRESULT;
         using handle = HWND;
 
         static inline std::unique_ptr<ID3D11Device, void ( * )( ID3D11Device* )> device{ nullptr, []( ID3D11Device* d ) {
@@ -55,10 +55,12 @@ namespace render {
 
     public:
         explicit c_directx() noexcept;
+
         c_directx( const c_directx& ) = delete;
         c_directx& operator=( const c_directx& ) = delete;
         c_directx( c_directx&& ) = delete;
         c_directx& operator=( c_directx&& ) = delete;
+
         ~c_directx() noexcept;
 
         [[nodiscard]] static std::unique_ptr<c_directx> create() noexcept;

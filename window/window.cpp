@@ -14,7 +14,7 @@ namespace render {
                          nullptr,
                          nullptr,
                          nullptr,
-                         WINDOW_CLASS_NAME,
+                         params::WINDOW_CLASS_NAME,
                          nullptr };
 
         if ( !::shadowcall<atom>( "RegisterClassExA", &window_class ) )
@@ -41,7 +41,7 @@ namespace render {
     }
 
     void c_window::create_window_handle() noexcept {
-        handle = ::shadowcall<HWND>( "CreateWindowExA", 0L, window_class.lpszClassName, WINDOW_NAME, WS_POPUP, 0, 0, 0, 0, nullptr, nullptr,
+        handle = ::shadowcall<HWND>( "CreateWindowExA", 0L, window_class.lpszClassName, params::WINDOW_NAME, WS_POPUP, 0, 0, 0, 0, nullptr, nullptr,
                                      window_class.hInstance, nullptr );
 
         if ( !handle )

@@ -82,6 +82,7 @@ set(ketaminex_SOURCES
 	"window/d3d/directx.hpp"
 	"window/window.cpp"
 	"window/window.hpp"
+	"window/window_constants.hpp"
 )
 
 add_executable(ketaminex)
