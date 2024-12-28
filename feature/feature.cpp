@@ -16,7 +16,7 @@ namespace feature {
     }
 
     c_feature::c_feature( std::string name, std::string description, const category_t category ) noexcept
-        : name( name ), description( description ), category( category ), settings_{ std::make_unique<c_settings>() } {
+        : name( std::move( name ) ), description( std::move( description ) ), category( category ), settings_{ std::make_unique<c_settings>() } {
         enabled_setting = settings_->initialize( "Enabled", "Enables or disables this feature", false );
     }
 
