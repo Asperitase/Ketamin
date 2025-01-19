@@ -103,7 +103,13 @@ public:
         auto setting =
             std::make_shared<c_setting>( name, description, std::variant<bool, int, float, std::string, ImColor>( std::forward<Args>( args )... ) );
 
-        globally( setting );
+        auto add_to_globals = [&]() noexcept {
+            assert( setting && "Setting cannot be null." );
+            settings_vector.push_back( setting );
+            settings_map[setting->get_name()] = settings_vector.size() - 1;
+        };
+
+        add_to_globals();
 
         return setting;
     }
@@ -143,19 +149,6 @@ public:
             assert( false && "Setting not found." );
 
         return settings_vector[it->second];
-    }
-
-private:
-    /**
-     * @brief Adds a setting to the global list (vector and map).
-     *
-     * @param setting A shared pointer to the setting to be added.
-     */
-    void globally( const std::shared_ptr<c_setting>& setting ) noexcept {
-        assert( setting && "Setting cannot be null." );
-
-        settings_vector.push_back( setting );
-        settings_map[setting->get_name()] = settings_vector.size() - 1;
     }
 
 private:
