@@ -7,13 +7,8 @@
 
 namespace feature::visual::overlay {
     struct overlay_context_t {
-        [[nodiscard]] auto settings_panel() const noexcept {
-            const auto& settings_control = feature::c_manager::instance().get_feature_by_name( "Control" )->get_settings();
-            return settings_control.get();
-        }
-
         [[nodiscard]] auto get_selected_arsenal( const std::string_view params ) const noexcept {
-            return std::get<int>( settings_panel()->get( params.data() )->get_value() );
+            return manager::get_value_from_class<int>( "Control", "c_control.selected_weapon" ).value();
         }
 
         void update() const noexcept {

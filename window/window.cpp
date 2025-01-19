@@ -1,5 +1,7 @@
 #include "window.hpp"
 
+#include <manager.hpp>
+
 #include <syscall.hpp>
 
 namespace render {
@@ -74,6 +76,8 @@ namespace render {
                 break;
 
             render_imgui_frame( directx.get() );
+
+            feature::c_manager::instance().update();
         }
 
         directx->cleanup_device();

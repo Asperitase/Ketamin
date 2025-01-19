@@ -2,6 +2,8 @@
 
 #include <common/weapon_name_selector.hpp>
 
+#include <manager.hpp>
+
 namespace feature::menu::control {
     c_control::c_control() noexcept: c_feature( "Control", "Control settings for weapon handling and recoil management", category_t::CONTROL ) {
         selected_weapon = settings_->initialize( "c_control.selected_weapon", "Currently selected weapon in the game", 0 );
@@ -14,6 +16,18 @@ namespace feature::menu::control {
 
         if ( is_enabled() ) {
             ImGui::Combo( "Weapon", &std::get<int>( selected_weapon->get_value() ), weapons_array, IM_ARRAYSIZE( weapons_array ) );
+        }
+    }
+
+    void c_control::on_enabled() noexcept {
+        if ( is_enabled() ) {
+           
+        }
+    }
+
+    void c_control::on_disabled() noexcept {
+        if ( !is_enabled() ) {
+           
         }
     }
 } // namespace feature::menu::control

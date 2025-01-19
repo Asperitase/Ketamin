@@ -16,4 +16,8 @@ namespace feature::visual::overlay {
     void c_overlay::on_menu() noexcept {
         ImGui::Checkbox( "Enable Overlay", &std::get<bool>( enabled_setting->get_value() ) );
     }
+
+    void c_overlay::on_enabled() noexcept { }
+
+    void c_overlay::on_disabled() noexcept { }
 } // namespace feature::visual::overlay

@@ -74,6 +74,22 @@ namespace feature {
         virtual void on_menu() noexcept = 0;
 
         /**
+         * @brief Executes logic when the feature is enabled.
+         *
+         * This method is called once when the feature is turned on, allowing
+         * initialization or activation-specific logic to run.
+         */
+        virtual void on_enabled() noexcept = 0;
+
+        /**
+         * @brief Executes logic when the feature is disabled.
+         *
+         * This method is called once when the feature is turned off, allowing
+         * cleanup or deactivation-specific logic to run.
+         */
+        virtual void on_disabled() noexcept = 0;
+
+        /**
          * @brief Checks if the feature is enabled.
          *
          * @return True if the feature is enabled, false otherwise.

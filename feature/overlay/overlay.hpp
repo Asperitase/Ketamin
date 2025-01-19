@@ -11,6 +11,8 @@ namespace feature::visual::overlay {
 
         void on_draw() noexcept final;
         void on_menu() noexcept final;
+        void on_enabled() noexcept final;
+        void on_disabled() noexcept final;
     };
 } // namespace feature::visual::overlay
 
