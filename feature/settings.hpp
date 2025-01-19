@@ -155,9 +155,7 @@ private:
         assert( setting && "Setting cannot be null." );
 
         settings_vector.push_back( setting );
-
-        const auto& name = setting->get_name();
-        settings_map[name] = settings_vector.size() - 1;
+        settings_map[setting->get_name()] = settings_vector.size() - 1;
     }
 
 private:
