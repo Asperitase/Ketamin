@@ -13,3 +13,12 @@ To get started, clone the repository and follow the build instructions:
 ```bash
 git clone https://github.com/Asperitase/ketamin-script.git
 cd ketamin-script
+```
+
+## How to run project
+
+```bash
+mkdir build
+cd build
+cmake ..
+```

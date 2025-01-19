@@ -30,4 +30,5 @@ static const char* weapons_array[] = { game_classes::rifle::AK.data(),
                                 game_classes::other::MGL.data(),
                                 game_classes::other::NAILGUN.data() };
 
+
 #endif // !WEAPON_NAME_SELECTOR_HPP
