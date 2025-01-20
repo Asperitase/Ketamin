@@ -3,7 +3,7 @@
 
 #include <manager.hpp>
 
-#include <common/weapon_name_selector.hpp>
+#include <common/weapon_name_array.hpp>
 
 namespace feature::visual::overlay {
     struct overlay_context_t {
