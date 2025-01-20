@@ -70,19 +70,19 @@ namespace feature {
         }
     }
 
-        [[nodiscard]] c_feature* manager::get_class( const std::string_view methods ) noexcept {
-            return c_manager::instance().get_class_by_name( methods );
-        }
+    [[nodiscard]] c_feature* manager::get_class( const std::string_view methods ) noexcept {
+        return c_manager::instance().get_class_by_name( methods );
+    }
 
-        [[nodiscard]] std::shared_ptr<c_setting> manager::get_parameters_from_class( const std::string_view methods,                                                                                     const std::string_view name ) noexcept {
-            auto feature = manager::get_class( methods );
-            if ( !feature )
-                return nullptr;
+    [[nodiscard]] std::shared_ptr<c_setting> manager::get_parameters_from_class( const std::string_view methods, const std::string_view name ) noexcept {
+        auto feature = manager::get_class( methods );
+        if ( !feature )
+            return nullptr;
 
-            auto settings = feature->get_settings().get();
-            if ( !settings )
-                return nullptr;
+        auto settings = feature->get_settings().get();
+        if ( !settings )
+            return nullptr;
 
-            return settings->get( std::string( name ) );
-        }
+        return settings->get( name.data() );
+    }
 } // namespace feature
