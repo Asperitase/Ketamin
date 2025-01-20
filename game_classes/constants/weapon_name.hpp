@@ -4,6 +4,10 @@
 #include <string_view>
 
 namespace game_classes {
+    namespace weapon {
+        constexpr std::string_view NONE = "Empty";
+    }
+
     namespace rifle {
         constexpr std::string_view AK = "Assault Rifle";
         constexpr std::string_view HMLMG = "Hmlmg";

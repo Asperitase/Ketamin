@@ -18,6 +18,8 @@ namespace feature::menu::control {
 
     private:
         std::shared_ptr<c_setting> selected_weapon;
+        std::shared_ptr<c_setting> selected_scope;
+        std::shared_ptr<c_setting> selected_module;
     };
 } // namespace feature::menu::control
 
