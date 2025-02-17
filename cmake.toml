@@ -1,0 +1,28 @@
+[cmake]
+version = "3.15"
+cmkr-include = "cmake/cmkr.cmake"
+
+[project]
+name = "ketamin"
+version = "1.0.0"
+languages = ["CXX"]
+
+[fetch-content]
+shadowsyscall = { git = "https://github.com/annihilatorq/shadow_syscall", tag = "shellcode", shallow = true }
+fmt = { git = "https://github.com/fmtlib/fmt", tag = "11.1.3", shallow = true }
+
+[target.ketamin]
+type = "executable"
+sources = [
+    "src/**.cpp",
+    "src/**.h",
+    "src/**.hpp",
+]
+include-directories = ["src/", "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include"]
+compile-features = ["cxx_std_23"]
+link-libraries = ["shadowsyscall", "fmt::fmt", "ntdll"]
+
+[target.ketamin.properties]
+CXX_STANDARD = 23
+CXX_STANDARD_REQUIRED = true
+
