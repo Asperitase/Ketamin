@@ -14,11 +14,9 @@ namespace logger {
     class logger final {
     public:
         explicit logger( const std::string& filename = "" ) noexcept {
-#if ( _DEBUG )
             if ( !filename.empty() ) {
                 file = std::make_unique<fmt::ostream>( fmt::output_file( filename ) );
             }
-#endif
         }
 
         template <typename... Args>
@@ -72,9 +70,7 @@ namespace logger {
             return oss.str();
         }
 
-#if ( _DEBUG )
         std::unique_ptr<fmt::ostream> file;
-#endif
     };
 
 #if ( _DEBUG )

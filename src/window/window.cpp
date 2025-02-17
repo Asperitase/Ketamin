@@ -23,7 +23,7 @@ namespace window {
     void window::shutdown() noexcept {
         is_running = false;
         if ( handle ) {
-            DestroyWindow( *handle );
+            ::shadowcall<BOOL>( "DestroyWindow", *handle );
             handle = nullptr;
         }
     }
