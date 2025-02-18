@@ -4,6 +4,7 @@
 #include <cassert>
 #include <external/ImGui/imgui.h>
 #include <memory>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -18,36 +19,30 @@ public:
      *
      * @param name The name of the setting.
      * @param description A short description of the setting.
-     * @param value The value of the setting, which can be of various types.
+     * @param value The value of the setting.
      */
-    c_setting( std::string name, std::string description, const std::any& value ) noexcept
-        : name( std::move( name ) ), description( std::move( description ) ), value( value ) { }
+    c_setting( std::string_view name, std::string_view description, const std::any& value ) noexcept
+        : name_( name ), description_( description ), value_( value ) { }
 
     /**
      * @brief Gets the name of the setting.
-     *
-     * @return The name of the setting.
      */
-    [[nodiscard]] const std::string& get_name() const noexcept {
-        return name;
+    [[nodiscard]] constexpr std::string_view get_name() const noexcept {
+        return name_;
     }
 
     /**
      * @brief Gets the description of the setting.
-     *
-     * @return The description of the setting.
      */
-    [[nodiscard]] const std::string& get_description() const noexcept {
-        return description;
+    [[nodiscard]] constexpr std::string_view get_description() const noexcept {
+        return description_;
     }
 
     /**
-     * @brief Gets a reference to the value of the setting.
-     *
-     * @return A reference to the value of the setting.
+     * @brief Gets the current value of the setting.
      */
-    std::any& get_value() noexcept {
-        return value;
+    [[nodiscard]] const std::any& get_value() const noexcept {
+        return value_;
     }
 
     /**
@@ -56,13 +51,13 @@ public:
      * @param val The new value to set for the setting.
      */
     void set_value( const std::any& val ) noexcept {
-        value = val;
+        value_ = val;
     }
 
 private:
-    std::string name;        ///< The name of the setting.
-    std::string description; ///< The description of the setting.
-    std::any value;          ///< The value of the setting (can be any type).
+    std::string name_;        ///< The name of the setting
+    std::string description_; ///< The description of the setting
+    std::any value_;          ///< The value of the setting
 };
 
 /**
@@ -70,82 +65,59 @@ private:
  */
 class c_settings final {
 public:
-    /**
-     * @brief Default constructor for the c_settings class.
-     * Initializes empty vectors and reserves space for settings.
-     */
-    c_settings() noexcept {
-        settings_map = std::unordered_map<std::string, std::size_t>(); // Mapping from setting name to index
-    }
+    using setting_ptr = std::shared_ptr<c_setting>;
 
-    /**
-     * @brief Destructor for the c_settings class.
-     * Ensures all settings are properly cleaned up.
-     */
-    ~c_settings() noexcept {
-        for ( auto& setting : settings_vector )
-            setting.reset(); // Reset all shared pointers in the vector to release memory
-    }
+    c_settings() noexcept = default;
+    ~c_settings() noexcept = default;
+
+    c_settings( const c_settings& ) = delete;
+    c_settings& operator=( const c_settings& ) = delete;
+
+    c_settings( c_settings&& ) noexcept = default;
+    c_settings& operator=( c_settings&& ) noexcept = default;
 
     /**
      * @brief Initializes a setting and adds it to the global list.
-     *
-     * @param name The name of the setting.
-     * @param description A description of the setting.
-     * @param value The value of the setting (can be any type).
      * @return A shared pointer to the created setting.
      */
     template <typename T>
-    std::shared_ptr<c_setting> initialize( const std::string& name, const std::string& description, const T& value ) noexcept {
-        if ( settings_vector.size() == settings_vector.capacity() )
-            settings_vector.reserve( settings_vector.capacity() * 2 );
+        requires std::same_as<T, bool> || std::same_as<T, int32_t> || std::same_as<T, uint32_t> || std::same_as<T, float> || std::same_as<T, double> ||
+                 std::same_as<T, std::string>
+    [[nodiscard]] setting_ptr initialize( std::string_view name, std::string_view description, const T& value ) noexcept {
+        if ( settings_map_.contains( std::string( name ) ) ) {
+            return nullptr;
+        }
 
         auto setting = std::make_shared<c_setting>( name, description, std::any( value ) );
-        assert( setting && "Setting cannot be null." );
-        settings_vector.push_back( setting );
-        settings_map[setting->get_name()] = settings_vector.size() - 1;
+        if ( !setting ) {
+            return nullptr;
+        }
+
+        settings_vector_.push_back( setting );
+        settings_map_[std::string( name )] = settings_vector_.size() - 1;
 
         return setting;
     }
 
     /**
-     * @brief Initializes a setting without adding it to the global list.
-     * This is useful for local, temporary settings.
-     *
-     * @param name The name of the setting.
-     * @param description A description of the setting.
-     * @param value The value of the setting (can be any type).
-     * @return A shared pointer to the created setting.
-     */
-    template <typename T>
-    std::shared_ptr<c_setting> local_initialize( const std::string& name, const std::string& description, const T& value ) noexcept {
-        return std::make_shared<c_setting>( name, description, std::any( value ) );
-    }
-
-    /**
      * @brief Gets all settings in the list.
-     *
-     * @return A constant reference to the vector containing all settings.
      */
-    [[nodiscard]] const std::vector<std::shared_ptr<c_setting>>& get_all() const noexcept {
-        return settings_vector;
+    [[nodiscard]] const std::vector<setting_ptr>& get_all() const noexcept {
+        return settings_vector_;
     }
 
     /**
      * @brief Gets a specific setting by name.
-     *
-     * @param name The name of the setting to retrieve.
-     * @return A constant reference to the shared pointer to the setting.
      */
-    [[nodiscard]] const std::shared_ptr<c_setting>& get( const std::string& name ) const noexcept {
-        const auto it = settings_map.find( name );
-        if ( it == settings_map.end() )
-            assert( false && "Setting not found." );
-
-        return settings_vector[it->second];
+    [[nodiscard]] std::optional<setting_ptr> get( std::string_view name ) const noexcept {
+        const auto it = settings_map_.find( std::string( name ) );
+        if ( it == settings_map_.end() ) {
+            return std::nullopt;
+        }
+        return settings_vector_[it->second];
     }
 
 private:
-    std::vector<std::shared_ptr<c_setting>> settings_vector;   ///< Vector of all settings.
-    std::unordered_map<std::string, std::size_t> settings_map; ///< Map for fast lookup by setting name.
+    std::vector<setting_ptr> settings_vector_;                  ///< Vector of all settings
+    std::unordered_map<std::string, std::size_t> settings_map_; ///< Map for fast lookup by setting name
 };

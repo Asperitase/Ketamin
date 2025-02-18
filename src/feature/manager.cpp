@@ -30,7 +30,7 @@ namespace feature {
 
         auto settings = feature->get_settings().get();
 
-        return settings ? settings->get( setting_name.data() ) : nullptr;
+        return settings->get( setting_name.data() ).value();
     }
 
     void c_manager::update() const noexcept {
