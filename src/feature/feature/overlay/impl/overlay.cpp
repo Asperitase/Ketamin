@@ -1,27 +1,23 @@
 #pragma once
 
 #include "overlay.hpp"
+#include "imgui_helpers.hpp"
 #include <algorithm>
 #include <external/ImGui/imgui.h>
 
+#include <utils/logger.hpp>
+
 namespace feature::visual::overlay {
-    overlay::impl::impl( const config_t& config ) noexcept: m_context{} {
-        m_context.init( config.weapon, config.scope, config.module );
+    overlay::impl::impl() noexcept {
+        m_header_panel = std::make_unique<header_panel>( m_context, m_config, m_header_config );
+        m_weapon_panel = std::make_unique<weapon_panel>( m_context, m_config );
 
-        m_header_panel = std::make_unique<c_header_panel>();
-        m_weapon_panel = std::make_unique<c_weapon_panel>( m_context );
-
-        m_panels.reserve( 1 );
+        m_panels.reserve( 2 );
         m_panels.push_back( m_header_panel.get() );
         m_panels.push_back( m_weapon_panel.get() );
-
-        m_enabled = config.enabled;
-        m_weapon = config.weapon;
-        m_scope = config.scope;
-        m_module = config.module;
     }
 
-    void overlay::impl::draw() noexcept {
+    void overlay::impl::on_draw() noexcept {
         if ( !is_enabled() )
             return;
 
@@ -38,19 +34,18 @@ namespace feature::visual::overlay {
         }
     }
 
-    void overlay::impl::show_menu() noexcept {
-        auto enabled = is_enabled();
-        if ( ImGui::Checkbox( "Enable Overlay", &enabled ) ) {
-            m_enabled->set_value( enabled );
-        }
+    void overlay::impl::on_menu() noexcept {
+        auto& manager = feature::c_manager::instance();
 
-        static int weapon = std::any_cast<int>( m_weapon->get_value() );
-        if ( ImGui::Combo( "Weapon", &weapon, weapons_array, IM_ARRAYSIZE( weapons_array ) ) ) {
-            m_weapon->set_value( weapon );
+        if ( auto enabled = manager.get_settings_by_feature( "Overlay", "Enabled" ); enabled.get() ) [[likely]] {
+            auto is_enabled = std::any_cast<bool>( enabled->get_value() );
+            if ( ImGui::Checkbox( "Enable Overlay", &is_enabled ) ) {
+                enabled->set_value( is_enabled );
+            }
         }
     }
 
-    void overlay::impl::enable() noexcept {
+    void overlay::impl::on_enabled() noexcept {
         if ( !is_enabled() )
             return;
 
@@ -61,7 +56,7 @@ namespace feature::visual::overlay {
         } );
     }
 
-    void overlay::impl::disable() noexcept {
+    void overlay::impl::on_disabled() noexcept {
         if ( is_enabled() )
             return;
 
@@ -72,37 +67,36 @@ namespace feature::visual::overlay {
         } );
     }
 
-    [[nodiscard]] bool overlay::impl::is_enabled() const noexcept {
-        if ( auto enabled = m_enabled; enabled ) {
+    bool overlay::impl::is_enabled() const noexcept {
+        auto& manager = feature::c_manager::instance();
+        if ( auto enabled = manager.get_settings_by_feature( "Overlay", "Enabled" ); enabled.get() ) {
             return std::any_cast<bool>( enabled->get_value() );
         }
         return false;
     }
 
     overlay::overlay() noexcept: c_feature( "Overlay", "Renders a window displaying script selection options.", category_t::VISUAL ) {
-        selected_weapon = settings->initialize( "overlay.selected_weapon", "Currently selected weapon in the game", 0 );
-        selected_scope = settings->initialize( "overlay.selected_scope", "Currently selected scope in the game", 0 );
-        selected_module = settings->initialize( "overlay.selected_module", "Currently selected module in the game", 0 );
+        selected_weapon = settings->initialize( "selected_weapon", "Currently selected weapon in the game", 0 );
+        selected_scope = settings->initialize( "selected_scope", "Currently selected scope in the game", 0 );
+        selected_module = settings->initialize( "selected_module", "Currently selected module in the game", 0 );
 
-        impl::config_t config{ .weapon = selected_weapon, .scope = selected_scope, .module = selected_module, .enabled = enabled_setting };
-
-        m_impl = std::make_unique<impl>( config );
+        m_impl = std::make_unique<impl>();
     }
 
     void overlay::on_draw() noexcept {
-        m_impl->draw();
+        m_impl->on_draw();
     }
 
     void overlay::on_menu() noexcept {
-        m_impl->show_menu();
+        m_impl->on_menu();
     }
 
     void overlay::on_enabled() noexcept {
-        m_impl->enable();
+        m_impl->on_enabled();
     }
 
     void overlay::on_disabled() noexcept {
-        m_impl->disable();
+        m_impl->on_disabled();
     }
 
 } // namespace feature::visual::overlay

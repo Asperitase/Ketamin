@@ -33,34 +33,23 @@ namespace feature::visual::overlay {
     private:
         class impl {
         public:
-            struct config_t {
-                std::shared_ptr<c_setting> weapon;
-                std::shared_ptr<c_setting> scope;
-                std::shared_ptr<c_setting> module;
-                std::shared_ptr<c_setting> enabled;
-            };
+            explicit impl() noexcept;
 
-            explicit impl( const config_t& config ) noexcept;
-
-            void draw() noexcept;
-            void show_menu() noexcept;
-            void enable() noexcept;
-            void disable() noexcept;
+            void on_draw() noexcept;
+            void on_menu() noexcept;
+            void on_enabled() noexcept;
+            void on_disabled() noexcept;
 
         private:
-            [[nodiscard]] bool is_enabled() const noexcept;
-
-        private:
-            std::shared_ptr<c_setting> m_enabled;
-            std::shared_ptr<c_setting> m_weapon;
-            std::shared_ptr<c_setting> m_scope;
-            std::shared_ptr<c_setting> m_module;
+            [[nodiscard( "Needed to check feature state" )]] bool is_enabled() const noexcept;
 
         private:
             overlay_context m_context;
-            std::unique_ptr<c_header_panel> m_header_panel;
-            std::unique_ptr<c_weapon_panel> m_weapon_panel;
-            std::vector<c_panel*> m_panels;
+            weapon_display_config_t m_config;
+            header_config_t m_header_config;
+            std::unique_ptr<header_panel> m_header_panel;
+            std::unique_ptr<weapon_panel> m_weapon_panel;
+            std::vector<panel*> m_panels;
         };
 
         std::unique_ptr<impl> m_impl;

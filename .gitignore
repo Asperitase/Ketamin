@@ -2,7 +2,6 @@
 build/
 CMakeFiles/
 CMakeCache.txt
-*.cmake
 
 # Visual Studio
 .vs/

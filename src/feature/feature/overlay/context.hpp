@@ -1,114 +1,120 @@
 #pragma once
 
 #include "overlay_types.hpp"
+#include "weapon_types.hpp"
 #include <array>
+#include <expected>
 #include <feature/manager.hpp>
-#include <optional>
 #include <span>
 #include <tuple>
+#include <utils/bit_flags.hpp>
 
 namespace feature::visual::overlay {
+    enum class overlay_error {
+        invalid_weapon_index,
+        invalid_scope_index,
+        invalid_module_index,
+        settings_not_found
+    };
+
     class overlay_context final {
     public:
-        struct cached_indices_t {
-            int weapon{ 0 };
-            int scope{ 0 };
-            int module{ 0 };
-
-            [[nodiscard]] bool operator==( const cached_indices_t& other ) const noexcept {
-                return weapon == other.weapon && scope == other.scope && module == other.module;
-            }
-
-            [[nodiscard]] bool operator!=( const cached_indices_t& other ) const noexcept {
-                return !( *this == other );
-            }
-        };
-
         explicit overlay_context() noexcept = default;
 
-        void init( const std::shared_ptr<c_setting>& weapon, const std::shared_ptr<c_setting>& scope, const std::shared_ptr<c_setting>& module ) noexcept {
-            m_weapon_setting = weapon;
-            m_scope_setting = scope;
-            m_module_setting = module;
-        }
-
         [[nodiscard]] bool update() noexcept {
-            const bool needs_update = check_for_updates();
-            if ( needs_update ) {
-                update_cache();
+            const auto flags = check_for_updates();
+            if ( flags ) {
+                return update_cache( flags );
             }
-            return ( needs_update == 0 );
+            return true;
         }
 
         [[nodiscard]] const weapon_data_t& get_selected_weapon() const noexcept {
-            return m_cached_weapon;
-        }
-
-        [[nodiscard]] constexpr const text_position_t& get_text_position() const noexcept {
-            return m_text_pos;
+            return m_weapon;
         }
 
     private:
-        [[nodiscard]] std::tuple<std::optional<int>, std::optional<int>, std::optional<int>> get_current_settings() const noexcept {
+        [[nodiscard]] std::expected<std::tuple<int, int, int>, overlay_error> get_current_settings() const noexcept {
             auto& manager = feature::c_manager::instance();
 
-            auto try_get_setting = [&manager]( const char* feature, const char* setting ) -> std::optional<int> {
-                if ( auto setting_ptr = manager.get_settings_by_feature( feature, setting ) ) {
+            auto try_get_setting = [&manager]( const char* setting ) noexcept -> std::expected<int, overlay_error> {
+                if ( auto setting_ptr = manager.get_settings_by_feature( "Overlay", setting ) ) {
                     if ( auto value = setting_ptr->get_value(); value.has_value() ) {
-                        return std::any_cast<int>( value );
+                        if ( auto* int_value = std::any_cast<int>( &value ) ) {
+                            return *int_value;
+                        }
                     }
                 }
-                return std::nullopt;
+                return std::unexpected( overlay_error::settings_not_found );
             };
 
-            return { try_get_setting( "Overlay", "overlay.selected_weapon" ), try_get_setting( "Overlay", "overlay.selected_scope" ),
-                     try_get_setting( "Overlay", "overlay.selected_module" ) };
+            auto weapon = try_get_setting( "selected_weapon" );
+            if ( !weapon )
+                return std::unexpected( weapon.error() );
+
+            auto scope = try_get_setting( "selected_scope" );
+            if ( !scope )
+                return std::unexpected( scope.error() );
+
+            auto module = try_get_setting( "selected_module" );
+            if ( !module )
+                return std::unexpected( module.error() );
+
+            return std::tuple{ *weapon, *scope, *module };
         }
 
-        [[nodiscard]] bool check_for_updates() noexcept {
-            const auto [new_weapon, new_scope, new_module] = get_current_settings();
+        [[nodiscard]] bit_flags<update_overlay_slot_flags, uint8_t> check_for_updates() noexcept {
+            bit_flags<update_overlay_slot_flags, uint8_t> flags{};
 
-            if ( !new_weapon || !new_scope || !new_module ) {
+            auto settings = get_current_settings();
+            if ( !settings ) {
+                return flags;
+            }
+
+            const auto [new_weapon, new_scope, new_module] = *settings;
+
+            if ( new_weapon != static_cast<int>( m_weapon.weapon ) ) {
+                flags.set<update_overlay_slot_flags::weapon>();
+            }
+            if ( new_scope != static_cast<int>( m_weapon.scope ) ) {
+                flags.set<update_overlay_slot_flags::scope>();
+            }
+            if ( new_module != static_cast<int>( m_weapon.module ) ) {
+                flags.set<update_overlay_slot_flags::module>();
+            }
+
+            return flags;
+        }
+
+        bool update_cache( const bit_flags<update_overlay_slot_flags, uint8_t>& flags ) noexcept {
+            auto settings = get_current_settings();
+            if ( !settings ) {
                 return false;
             }
 
-            const cached_indices_t current_indices{ .weapon = *new_weapon, .scope = *new_scope, .module = *new_module };
+            const auto [weapon_idx, scope_idx, module_idx] = *settings;
 
-            return current_indices != cached_indices_t{ m_cached_weapon_index, m_cached_scope_index, m_cached_module_index };
-        }
-
-        void update_cache() noexcept {
-            const auto [weapon_idx_opt, scope_idx_opt, module_idx_opt] = get_current_settings();
-
-            if ( !weapon_idx_opt || !scope_idx_opt || !module_idx_opt ) {
-                return;
+            if ( !detail::is_valid_index( static_cast<weapon_type>( weapon_idx ), detail::weapon_names ) ||
+                 !detail::is_valid_index( static_cast<scope_type>( scope_idx ), detail::scope_names ) ||
+                 !detail::is_valid_index( static_cast<module_type>( module_idx ), detail::module_names ) ) {
+                return false;
             }
 
-            const int weapon_idx = *weapon_idx_opt;
-            const int scope_idx = *scope_idx_opt;
-            const int module_idx = *module_idx_opt;
-
-            if ( weapon_idx >= 0 && weapon_idx < std::size( weapons_array ) && scope_idx >= 0 && scope_idx < std::size( scopes_array ) &&
-                 module_idx >= 0 && module_idx < std::size( modules_array ) ) {
-
-                m_cached_weapon = { weapons_array[weapon_idx], scopes_array[scope_idx], modules_array[module_idx] };
-
-                m_cached_weapon_index = weapon_idx;
-                m_cached_scope_index = scope_idx;
-                m_cached_module_index = module_idx;
+            if ( flags.has<update_overlay_slot_flags::weapon>() ) {
+                m_weapon.weapon = static_cast<weapon_type>( weapon_idx );
             }
+            if ( flags.has<update_overlay_slot_flags::scope>() ) {
+                m_weapon.scope = static_cast<scope_type>( scope_idx );
+            }
+            if ( flags.has<update_overlay_slot_flags::module>() ) {
+                m_weapon.module = static_cast<module_type>( module_idx );
+            }
+
+            return true;
         }
 
     private:
-        std::shared_ptr<c_setting> m_weapon_setting;
-        std::shared_ptr<c_setting> m_scope_setting;
-        std::shared_ptr<c_setting> m_module_setting;
-
-        weapon_data_t m_cached_weapon;
-        int m_cached_weapon_index{ -1 };
-        int m_cached_scope_index{ -1 };
-        int m_cached_module_index{ -1 };
-        text_position_t m_text_pos;
+        weapon_data_t m_weapon;
     };
 
 } // namespace feature::visual::overlay
