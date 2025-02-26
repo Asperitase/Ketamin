@@ -33,7 +33,4 @@ private:
 
     void render_main_window( menu_settings settings ) noexcept;
     void render_other_window() noexcept;
-
-private:
-    std::atomic_flag initialize = ATOMIC_FLAG_INIT;
 };

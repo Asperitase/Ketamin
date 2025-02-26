@@ -1,6 +1,9 @@
 #include "window.hpp"
 #include "utils/logger.hpp"
 
+#include <core/thread_management/base/thread_manager.hpp>
+#include <feature/manager.hpp>
+
 namespace window {
 
     window::window() noexcept: imgui_manager() {
@@ -56,6 +59,17 @@ namespace window {
         }
 
         initialize_imgui( handle.value(), render.get() );
+
+        auto update_thread = thread::thread_manager::instance().create_thread(
+            []( std::stop_token token ) {
+                while ( !token.stop_requested() ) {
+                    feature::c_manager::instance().update();
+
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+                }
+            },
+            { "update_thread" } );
+
 
         is_running = true;
         while ( is_running ) {

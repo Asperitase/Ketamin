@@ -8,9 +8,12 @@
 
 #include <feature/manager.hpp>
 
+std::atomic<bool> is_initialized{false};
+
 imgui_manager::~imgui_manager() noexcept {
-    if ( std::atomic_flag_test_and_set( &initialize ) )
+    if (is_initialized.exchange(false)) {
         shutdown_imgui();
+    }
 }
 
 void imgui_manager::configure_style() noexcept {
@@ -38,8 +41,9 @@ void imgui_manager::configure_imgui() noexcept {
     configure_style();
 }
 void imgui_manager::initialize_imgui( window_handle handle, render::directx11* directx ) noexcept {
-    if ( std::atomic_flag_test_and_set( &initialize ) )
+    if (is_initialized.exchange(true)) {
         return;
+    }
 
     ImGui::CreateContext();
     configure_imgui();
@@ -47,8 +51,6 @@ void imgui_manager::initialize_imgui( window_handle handle, render::directx11* d
 
     ImGui_ImplWin32_Init( handle );
     ImGui_ImplDX11_Init( directx->get_device(), directx->get_context() );
-
-    std::atomic_flag_clear( &initialize );
 }
 
 void imgui_manager::render_main_window( menu_settings settings ) noexcept {
@@ -67,14 +69,13 @@ void imgui_manager::render_other_window() noexcept {
 }
 
 void imgui_manager::render_frame( menu_settings settings, render::directx11* directx ) noexcept {
-    if ( !std::atomic_flag_test_and_set( &initialize ) )
+    if (!is_initialized.load()) {
         return;
+    }
 
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
-
-    feature::c_manager::instance().update(); // thread
 
     render_main_window( settings );
 

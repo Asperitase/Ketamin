@@ -22,6 +22,7 @@
  * @brief Main application entry point
  * @return Exit code, 0 on success, non-zero on failure
  */
+
 int main() {
     auto window = initialize_window();
     if ( !window ) {
